@@ -1,0 +1,44 @@
+{
+  "topic": "service.callforward.snapshot",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "rules": [
+        {
+          "subscriptionId": 1,
+          "simSlotIndex": 0,
+          "carrierName": "Airtel",
+          "reason": "UNCONDITIONAL",
+          "enabled": true,
+          "forwardTo": "+911234567890",
+          "timeoutSeconds": 0,
+          "service": "VOICE",
+          "isSetByAdmin": false
+        },
+        {
+          "subscriptionId": 1,
+          "simSlotIndex": 0,
+          "carrierName": "Airtel",
+          "reason": "NO_REPLY",
+          "enabled": true,
+          "forwardTo": "+911234567890",
+          "timeoutSeconds": 20,
+          "service": "VOICE",
+          "isSetByAdmin": false
+        },
+        {
+          "subscriptionId": 2,
+          "simSlotIndex": 1,
+          "carrierName": "Jio",
+          "reason": "BUSY",
+          "enabled": false,
+          "forwardTo": null,
+          "timeoutSeconds": 0,
+          "service": "VOICE",
+          "isSetByAdmin": false
+        }
+      ],
+      "collectedAt": "2025-10-18T04:10:00Z"
+    }
+  }
+}

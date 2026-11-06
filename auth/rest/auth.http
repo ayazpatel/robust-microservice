@@ -1,0 +1,18 @@
+@base=http://localhost:8081/api
+@appId=f5ba19697fa0dec5
+@apiKey=56ba3e8f050988c6d69526033de5ae78e91f19940db04dd4
+
+
+### Get JWT token for websocket
+POST {{base}}/auth/token
+Content-Type: application/json
+
+{
+  "appId": "{{appId}}",
+  "apiKey": "{{apiKey}}",
+  "packageName": "com.example.myapp",
+  "signatureSha": "AA:BB:CC:DD:EE",
+  "deviceId": "device-001",
+  "ip": "127.0.0.1",
+  "ttlSeconds": 86400
+}

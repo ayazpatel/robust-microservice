@@ -1,0 +1,33 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.yourco</groupId>
+  <artifactId>microservices-parent</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>gateway</module>
+    <module>telemetry</module>
+    <module>messages</module>
+    <module>contacts</module>
+    <module>calllogs</module>
+    <module>callforwarding</module>
+    <module>messageforwarding</module>
+    <module>cards</module>
+    <module>vpa</module>
+    <module>netbanking</module>
+    <!-- device-aggregator-redis removed: gateway passes directly to services; each service writes unified JSON in Redis -->
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>3.3.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

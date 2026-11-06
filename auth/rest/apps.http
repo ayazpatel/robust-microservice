@@ -1,0 +1,31 @@
+@base=http://localhost:8081/api
+@appId=f5ba19697fa0dec5
+
+### Register app
+POST {{base}}/apps
+Content-Type: application/json
+
+{
+  "appName": "My Sample App",
+  "packageName": "com.example.myapp",
+  "signatureSha": "AB:CD:EF:11:22:33:44:55"
+}
+
+### List apps
+GET {{base}}/apps
+
+### Reset api key (replace with the appId returned from register/list)
+POST {{base}}/apps/{{appId}}/reset-key
+
+### Update app (replace with the appId returned from register/list)
+PUT {{base}}/apps/{{appId}}
+Content-Type: application/json
+
+{
+  "appName": "My Sample App (Updated)",
+  "packageName": "com.example.myapp",
+  "signatureSha": "AA:BB:CC:DD:EE"
+}
+
+### Delete app (replace with the appId returned from register/list)
+DELETE {{base}}/apps/{{appId}}

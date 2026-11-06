@@ -1,0 +1,17 @@
+{
+  "deviceId": "android-device-001",
+  "payload": {
+    "type": "server_msg",
+    "category": "message",
+    "sub_category": "send",
+    "commandId": "cmd-send-sms-001",
+    "data": {
+      "recipient": "+911234567890",
+      "messageContent": "Test message from server",
+      "sim": {
+        "slot": "0",
+        "retries": "2"
+      }
+    }
+  }
+}

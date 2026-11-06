@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    ports: ["5672:5672", "15672:15672"]
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  ws:
+    build: ..
+    environment:
+      PORT: 8080
+      RABBIT_URL: amqp://guest:guest@rabbit:5672/
+      RABBIT_EXCHANGE: ws_ingress
+      RABBIT_ROUTING_KEY: client.event
+      AUTH_PUBLIC_PEM: "${AUTH_PUBLIC_PEM}"
+      IDLE_TIMEOUT: 120
+      MAX_PAYLOAD: 1048576
+      REDIS_URL: redis://redis:6379
+    ports: ["8080:8080"]
+    depends_on: [rabbit, redis]
+    ulimits:
+      nofile: 1048576
+    sysctls:
+      net.core.somaxconn: 65535

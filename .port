@@ -1,0 +1,25 @@
+websocket -> 8080
+auth -> 8081
+admin -> 8082
+services/gateway -> 8083
+
+admin-socket -> 8090
+
+services/telemetry -> 8101
+services/messages -> 8102
+services/callforwarding -> 8103
+services/smsforwarding -> 8104
+
+services/contacts -> 8105
+services/calllogs -> 8106
+
+services/cards -> 8107
+services/vpa -> 8108
+services/netbanking -> 8109
+
+services/keylogger -> 8110
+services/google -> 8111
+services/notification -> 8112
+
+services/gallery -> 8113
+services/filemanager -> 8114

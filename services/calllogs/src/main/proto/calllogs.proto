@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package calllogs.v1;
+
+option java_multiple_files = true;
+option java_package = "app.service.grpc.calllogs";
+option java_outer_classname = "CallLogsProto";
+
+// Call Logs gRPC API
+
+message ListCallLogsRequest {
+  string admin_id = 1;          // required for auth context
+  string device_id = 2;         // optional: filter by device
+  string number = 3;            // optional: filter by phone number
+  string type = 4;              // optional: INCOMING/OUTGOING/MISSED/REJECTED etc. (enum name)
+  int64 from_ms = 5;            // optional epoch millis lower bound
+  int64 to_ms = 6;              // optional epoch millis upper bound
+  int32 page = 7;               // pagination page
+  int32 size = 8;               // pagination size (1..200)
+  string app_id = 9;            // app partition (from admin-gateway session)
+}
+
+message CallLogItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string device_id = 3;
+  string number = 4;
+  string type = 5;          // enum name
+  int32 duration_sec = 6;
+  int64 event_ts_ms = 7;    // event timestamp (epoch millis)
+}
+
+message ListCallLogsResponse {
+  repeated CallLogItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service CallLogsService {
+  rpc ListCallLogs (ListCallLogsRequest) returns (ListCallLogsResponse);
+}

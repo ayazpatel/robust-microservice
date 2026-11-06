@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Socket Test</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #0f111a;
+        color: #e0e0e0;
+        font-family: Segoe UI, Roboto, Arial, sans-serif;
+      }
+      h1 {
+        margin: 0 0 14px;
+        color: #00ffc8;
+        text-shadow: 0 0 8px #00ffc8;
+      }
+      .card {
+        background: #1b1d2a;
+        border: 1px solid #2e324d;
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: #a9b2c3;
+        margin-bottom: 6px;
+      }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        background: #25273a;
+        border: 1px solid #333;
+        color: #fff;
+        border-radius: 10px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 12px;
+      }
+      button {
+        background: #25273a;
+        color: #e0e0e0;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #00ffc8;
+        color: #0f111a;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #a9b2c3;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #777;
+        box-shadow: 0 0 8px currentColor;
+      }
+      .ok {
+        background: #00ffc8;
+      }
+      .err {
+        background: #ff6b6b;
+      }
+      #log {
+        background: #11131f;
+        border: 1px solid #2e324d;
+        border-radius: 12px;
+        height: 55vh;
+        overflow: auto;
+        padding: 12px;
+        font-family: ui-monospace, Menlo, monospace;
+        font-size: 13px;
+      }
+      .line {
+        border-left: 3px solid #1cb5ad;
+        padding: 6px 8px;
+        margin: 6px 0;
+      }
+      .recv {
+        color: #66aaff;
+      }
+      .sys {
+        color: #a9b2c3;
+        border-left-color: #5865f2;
+      }
+    </style>
+    <script>
+      let ws = null;
+      function $(id) {
+        return document.getElementById(id);
+      }
+      function setStatus(kind, text) {
+        const d = $("dot");
+        d.classList.remove("ok", "err");
+        if (kind === "ok") d.classList.add("ok");
+        if (kind === "err") d.classList.add("err");
+        $("st").textContent = text;
+      }
+      function log(kind, msg) {
+        const div = document.createElement("div");
+        div.className = "line " + (kind || "sys");
+        const t = new Date().toLocaleTimeString();
+        div.textContent = "[" + t + "] " + msg;
+        const el = $("log");
+        el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
+      }
+      async function connect() {
+        if (ws) {
+          log("sys", "Already connected");
+          return;
+        }
+        const url = $("url").value.trim();
+        const adminId = $("adminId").value.trim();
+        if (!adminId) {
+          log("sys", "Enter adminId");
+          return;
+        }
+        const full = url + "/ws?adminId=" + encodeURIComponent(adminId);
+        log("sys", "Connecting " + full);
+        try {
+          ws = new WebSocket(full);
+        } catch (e) {
+          log("sys", "Failed: " + (e.message || e));
+          return;
+        }
+        ws.onopen = () => {
+          setStatus("ok", "Connected");
+          log("sys", "Connected");
+        };
+        ws.onclose = (e) => {
+          setStatus("err", "Disconnected");
+          log("sys", "Closed " + e.code + " " + (e.reason || ""));
+          ws = null;
+        };
+        ws.onerror = (e) => {
+          setStatus("err", "Error");
+          log("sys", "Socket error");
+        };
+        ws.onmessage = (ev) => {
+          let txt = "";
+          try {
+            txt =
+              typeof ev.data === "string"
+                ? ev.data
+                : new TextDecoder().decode(ev.data);
+          } catch {
+            txt = "[binary]";
+          }
+          // Highlight src/type if present
+          try {
+            const o = JSON.parse(txt);
+            if (o && (o.src || o.type)) {
+              txt = JSON.stringify(o, null, 2);
+            }
+          } catch {}
+          log("recv", txt);
+        };
+      }
+      function disconnect() {
+        if (!ws) {
+          log("sys", "Not connected");
+          return;
+        }
+        ws.close();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Admin Socket Test</h1>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>Server URL</label>
+          <input id="url" value="ws://127.0.0.1:8090" />
+        </div>
+        <div>
+          <label>Admin ID</label>
+          <input id="adminId" placeholder="e.g. 42" />
+        </div>
+      </div>
+      <div
+        style="margin-top: 12px; display: flex; gap: 10px; align-items: center"
+      >
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+        <span class="status"
+          ><span id="dot" class="dot"></span
+          ><span id="st">Disconnected</span></span
+        >
+      </div>
+    </div>
+    <div id="log"></div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package callforwarding.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.callforwarding";
+option java_outer_classname = "CallForwardingProto";
+
+message ListCallForwardRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  optional int32 subscription_id = 3;
+  string reason = 4;
+  string service = 5;
+  int32 page = 6;
+  int32 size = 7;
+  string app_id = 8;
+}
+
+message CallForwardRule {
+  uint64 id = 1;
+  string device_id = 2;
+  int32 subscription_id = 3;
+  int32 sim_slot_index = 4;
+  string carrier_name = 5;
+  string reason = 6;
+  bool enabled = 7;
+  string forward_to = 8;
+  int32 timeout_seconds = 9;
+  string service = 10;
+  bool is_set_by_admin = 11;
+  int64 collected_at_ms = 12;
+}
+
+message ListCallForwardResponse {
+  repeated CallForwardRule items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service CallForwardingService {
+  rpc ListCallForwardRules (ListCallForwardRequest) returns (ListCallForwardResponse);
+}

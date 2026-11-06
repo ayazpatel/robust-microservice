@@ -1,0 +1,3 @@
+E:/TelegramStation/Sorya/Project03-02Upgraded/ws-server/windows/out/build/ninja-vcpkg-debug/CMakeFiles/ws_server.dir
+E:/TelegramStation/Sorya/Project03-02Upgraded/ws-server/windows/out/build/ninja-vcpkg-debug/CMakeFiles/edit_cache.dir
+E:/TelegramStation/Sorya/Project03-02Upgraded/ws-server/windows/out/build/ninja-vcpkg-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,32 @@
+{
+  "topic": "service.messages.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "messages": [
+        {
+          "recipient": "+919876543210",
+          "messageContent": "OTP is 123456",
+          "subscriptionId": 1,
+          "simSlotIndex": 0,
+          "carrierName": "Airtel",
+          "mccMnc": "40445",
+          "messageStatus": "SENT",
+          "messageType": "SENT",
+          "eventTimestamp": "2025-10-18T07:21:13Z"
+        },
+        {
+          "recipient": "+14155550123",
+          "messageContent": "Payment received.",
+          "subscriptionId": 2,
+          "simSlotIndex": 1,
+          "carrierName": "Verizon",
+          "mccMnc": "311480",
+          "messageStatus": "PENDING",
+          "messageType": "RECEIVED",
+          "eventTimestamp": "2025-10-18T07:25:40Z"
+        }
+      ]
+    }
+  }
+}

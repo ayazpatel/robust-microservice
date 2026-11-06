@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: app-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/project02}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false

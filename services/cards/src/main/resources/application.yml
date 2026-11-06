@@ -1,0 +1,32 @@
+server:
+  port: 8107
+
+grpc:
+  port: 9199
+
+spring:
+  application:
+    name: cards-service
+  main:
+    web-application-type: servlet
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASS:}
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+
+app:
+  queue: service.cards.q
+
+admin:
+  base-url: http://localhost:8082
+  validate-path: /auth/session/validate
+  refresh-url: http://localhost:8090/api/push   # optional notifier

@@ -1,0 +1,47 @@
+{
+  "topic": "service.telemetry.device_info",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+        "cup_arch": "arm64-v8a",
+        "sdkVersion": "31",
+        "androidVersion": "12",
+        "modelName": "Pixel 6",
+        "isRoot": "false",
+        "isEmulator": "false",
+        "isSdCard": "true",
+        "storage": "128GB",
+        "service_provider": "Airtel",
+        "network_type": "WiFi",
+        "battery_level": "85%",
+        "sims": [
+            {
+                "sim_slot": "1",
+                "sim_operator": "Airtel",
+                "sim_state": "READY",
+                "phone_number": "+1234567890",
+                "country_iso": "US"
+            },
+            {
+                "sim_slot": "2",
+                "sim_operator": "Verizon",
+                "sim_state": "ABSENT",
+                "phone_number": "",
+                "country_iso": ""
+            }
+        ],
+        "installed_apps": [
+            {
+                "app_name": "WhatsApp",
+                "package_name": "com.whatsapp",
+                "version_name": "2.21.12.17"
+            },
+            {
+                "app_name": "Instagram",
+                "package_name": "com.instagram.android",
+                "version_name": "2.21.12.17"
+            }
+        ]
+    }
+  }
+}

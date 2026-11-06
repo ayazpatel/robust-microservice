@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package contacts.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.contacts";
+option java_outer_classname = "ContactsProto";
+
+message ListContactsRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  string q = 3;
+  int32 page = 4;
+  int32 size = 5;
+  string app_id = 6;
+}
+
+message ContactItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string device_id = 3;
+  string lookup_key = 4;
+  string display_name = 5;
+  int64 collected_at_ms = 6;
+  repeated string numbers = 7;
+}
+
+message ListContactsResponse {
+  repeated ContactItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service ContactsService {
+  rpc ListContacts (ListContactsRequest) returns (ListContactsResponse);
+}

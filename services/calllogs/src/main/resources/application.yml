@@ -1,0 +1,44 @@
+server:
+  port: 8106
+
+grpc:
+  port: 9191
+
+spring:
+  application:
+    name: calllogs-service
+  
+  main:
+    web-application-type: servlet
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 5000
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    listener:
+      simple:
+        concurrency: 5          # concurrent consumers (threads)
+        max-concurrency: 10
+        prefetch: 20            # tune based on payload size/time
+        acknowledge-mode: AUTO
+
+# Set which queue this service consumes (change per service)
+app:
+  queue: service.calllog.q
+
+admin:
+  refresh-url: http://localhost:8090/api/push   # optional notifier
+  base-url: http://localhost:8082
+  validate-path: /auth/session/validate

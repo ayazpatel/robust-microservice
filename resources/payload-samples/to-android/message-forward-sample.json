@@ -1,0 +1,18 @@
+{
+  "deviceId": "android-device-001",
+  "payload": {
+    "type": "server_msg",
+    "category": "message",
+    "sub_category": "forward",
+    "commandId": "cmd-forward-sms-001",
+    "data": {
+      "senderId": "+919876543210",
+      "recipient": "+911122233344",
+      "message_content": "Forwarding original OTP 654321",
+      "sim": {
+        "slot": "1",
+        "retries": "1"
+      }
+    }
+  }
+}

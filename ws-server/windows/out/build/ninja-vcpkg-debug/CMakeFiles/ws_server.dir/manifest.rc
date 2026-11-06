@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "E:/TelegramStation/Sorya/Project03-02Upgraded/ws-server/windows/out/build/ninja-vcpkg-debug/CMakeFiles/ws_server.dir/embed.manifest"

@@ -1,0 +1,21 @@
+{
+  "topic": "service.netbanking.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "netbanking": [
+        {
+          "bank_name": "SBI",
+          "account_number": "123456789321654897",
+          "username": "alex1234",
+          "password": "123456",
+          "ifsc_code": "",
+          "phone_number": 123, 
+          "adhar_card": "",
+          "pan_card": "",
+          "eventTimestamp": "2025-10-18T07:21:13Z"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "tailwindcss/preflight" layer(tw-preflight);
+@import "tailwindcss/utilities" layer(tw-utilities);
+
+/* Global baseline tailored for app layout */
+:root {
+  --app-bg: #f8f9fa;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  writing-mode: horizontal-tb;
+  overflow-x: hidden;
+  word-break: normal;
+  white-space: normal;
+}
+
+a { text-decoration: none; }
+
+/* Utility helpers */
+.min-vh-100 { min-height: 100vh; }

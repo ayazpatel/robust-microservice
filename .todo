@@ -1,0 +1,31 @@
+## SERVICES
+
+
+-telemetry -> done
+-messages -> done
+
+-callForwarding -> done
+-messageForwarding ->
+
+--contacts -> done
+--calllogs -> done
+
+--cc -> done
+--vpa -> done
+--netbanking -> done
+
+--gallery -> dcim -> directory map (directory file structure) (minio backed)
+
+--google ->
+
+
+
+//each minio instance for each admin -> seperate liability
+//filemanager ->
+app/adminID/deviceId/dirs... (full filemanager access) -> (
+    admin has device file manager (
+        gets all file uploaded -> (
+            images, txt, video can be viewed etc needs to be manually download/zip backup
+        )
+    )
+)

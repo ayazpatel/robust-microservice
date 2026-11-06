@@ -1,0 +1,16 @@
+{
+  "topic": "service.calllog.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "calls": [
+        {
+          "number": "Unknown",
+          "type": "REJECTED",
+          "eventTimestamp": "2025-10-18T09:00:00Z",
+          "durationSec": 0
+        }
+      ]
+    }
+  }
+}

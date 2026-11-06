@@ -1,0 +1,1 @@
+git -C E:\TelegramStation\Sorya\Project03-02Upgraded\vcpkg rev-parse HEAD

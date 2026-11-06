@@ -1,0 +1,7 @@
+.\build\Release\ws_server.exe
+
+
+ . 'E:\TelegramStation\Sorya\Project02\server\ws-server\windows\scripts\run.ps1'
+
+ PS E:\TelegramStation\Sorya\Project02> $env:AUTH_PUBLIC_PEM="-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA263OPknb2RSHHUJ5FUk+\n0wQlXMnjP38Yf5DeX3r1Ut+9ZbdsPU3+GQDB9B9AueYa2a/sIUVycjuJ1+Tu3nlg\n16/Wt5iKXHMSBfuE32HDmJOoCMBkBVmKavZnQR2njLfcBV516p5NXD62zJqw0tJO\nqvlR9N62AJhqdjvp9qtzbZZgWDpxsp4IS4F8kq3+SjDeErtM+kdx0ux1908dmopq\nn+8YDxlqrRDkrPZUJcAQISDI3dJF2hw1Z5f+RJcSOrmrzomNuchK9WSZuJUYvA/6\nKzzqELjXkmp1OgE6LM/zRAWq5gTO1J23Ge/My7fegA5dod5efBzUiiubdq95lSmJ\ntQIDAQAB\n-----END PUBLIC KEY-----\n"
+PS E:\TelegramStation\Sorya\Project02>  . 'E:\TelegramStation\Sorya\Project02\server\ws-server\windows\scripts\run.ps1'

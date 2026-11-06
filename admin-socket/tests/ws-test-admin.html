@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WS Test (Admin)</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #0f111a;
+        color: #e0e0e0;
+        font-family: Segoe UI, Roboto, Arial, sans-serif;
+      }
+      h1 {
+        margin: 0 0 14px;
+        color: #00ffc8;
+        text-shadow: 0 0 8px #00ffc8;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr auto auto;
+        gap: 10px;
+      }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        background: #25273a;
+        border: 1px solid #333;
+        color: #fff;
+        border-radius: 10px;
+      }
+      button {
+        background: #25273a;
+        color: #e0e0e0;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #00ffc8;
+        color: #0f111a;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 10px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #777;
+        box-shadow: 0 0 8px currentColor;
+      }
+      .ok {
+        background: #00ffc8;
+      }
+      .err {
+        background: #ff6b6b;
+      }
+      #log {
+        margin-top: 14px;
+        background: #11131f;
+        border: 1px solid #2e324d;
+        border-radius: 12px;
+        height: 65vh;
+        overflow: auto;
+        padding: 12px;
+        font-family: ui-monospace, Menlo, monospace;
+        font-size: 13px;
+      }
+      .line {
+        border-left: 3px solid #1cb5ad;
+        padding: 6px 8px;
+        margin: 6px 0;
+      }
+      .sys {
+        border-left-color: #5865f2;
+        color: #a9b2c3;
+      }
+      .recv {
+        color: #66aaff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Admin WS Test</h1>
+    <div class="row">
+      <input id="url" value="ws://127.0.0.1:8090" />
+      <input id="adminId" placeholder="Admin ID (e.g. 42)" />
+      <button id="btnConnect">Connect</button>
+      <button id="btnDisconnect">Disconnect</button>
+      <span class="status"
+        ><span id="dot" class="dot"></span
+        ><span id="st">Disconnected</span></span
+      >
+    </div>
+    <div id="log"></div>
+    <script>
+      let ws = null;
+      const $ = (id) => document.getElementById(id);
+      function setStatus(k, t) {
+        const d = $("dot");
+        d.classList.remove("ok", "err");
+        if (k === "ok") d.classList.add("ok");
+        if (k === "err") d.classList.add("err");
+        $("st").textContent = t;
+      }
+      function log(kind, msg) {
+        const div = document.createElement("div");
+        div.className = "line " + (kind || "sys");
+        const t = new Date().toLocaleTimeString();
+        div.textContent = "[" + t + "] " + msg;
+        const el = $("log");
+        el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
+      }
+      function pretty(s) {
+        try {
+          return JSON.stringify(JSON.parse(s), null, 2);
+        } catch {
+          return s;
+        }
+      }
+      function connect() {
+        if (ws) {
+          log("sys", "Already connected");
+          return;
+        }
+        const base = $("url").value.trim();
+        const a = $("adminId").value.trim();
+        if (!a) {
+          log("sys", "Enter adminId");
+          return;
+        }
+        const full = base + "/ws?adminId=" + encodeURIComponent(a);
+        log("sys", "Connecting " + full);
+        try {
+          ws = new WebSocket(full);
+        } catch (e) {
+          log("sys", "Failed: " + (e.message || e));
+          return;
+        }
+        ws.onopen = () => {
+          setStatus("ok", "Connected");
+          log("sys", "Connected");
+        };
+        ws.onclose = (e) => {
+          setStatus("err", "Disconnected");
+          log("sys", "Closed " + e.code + " " + (e.reason || ""));
+          ws = null;
+        };
+        ws.onerror = (e) => {
+          setStatus("err", "Error");
+          log("sys", "Socket error");
+        };
+        ws.onmessage = (ev) => {
+          let txt = "";
+          if (typeof ev.data === "string") {
+            txt = ev.data;
+          } else {
+            try {
+              txt = new TextDecoder().decode(ev.data);
+            } catch {
+              txt = "[binary]";
+            }
+          }
+          log("recv", "\n" + pretty(txt));
+        };
+      }
+      function disconnect() {
+        if (!ws) {
+          log("sys", "Not connected");
+          return;
+        }
+        ws.close();
+      }
+      $("btnConnect").onclick = connect;
+      $("btnDisconnect").onclick = disconnect;
+    </script>
+  </body>
+</html>

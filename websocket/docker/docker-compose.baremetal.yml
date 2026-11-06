@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  rabbit:
+    image: rabbitmq:3.12
+    restart: unless-stopped
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+    networks: [mesh]
+
+  ws:
+    build: ..
+    environment:
+      PORT: 443
+      RABBIT_URL: amqp://user:pass@rabbit:5672/
+      RABBIT_EXCHANGE: ws_ingress
+      RABBIT_ROUTING_KEY: client.event
+      AUTH_PUBLIC_PEM: "${AUTH_PUBLIC_PEM}"
+      SSL_KEY: /certs/your.key
+      SSL_CERT: /certs/your.crt
+      IDLE_TIMEOUT: 120
+      MAX_PAYLOAD: 1048576
+    volumes:
+      - /etc/ssl/my-ws:/certs:ro
+    ports: ["443:443"]
+    restart: unless-stopped
+    ulimits:
+      nofile: 1048576
+    sysctls:
+      net.core.somaxconn: 65535
+      net.ipv4.ip_local_port_range: "1024 65000"
+    networks: [mesh]
+
+networks:
+  mesh: {}
+
+volumes:
+  rabbit-data: {}

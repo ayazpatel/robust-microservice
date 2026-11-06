@@ -1,0 +1,19 @@
+{
+  "topic": "service.cards.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "cards": [
+        {
+          "card_number_raw": 4242424242424242,
+          "expiry_month": 6,
+          "expiry_year": 26,
+          "cvv": 123, 
+          "name_on_card": "John Doe",
+          "phone_number": "9876543210",
+          "eventTimestamp": "2025-10-18T07:21:13Z"
+        }
+      ]
+    }
+  }
+}

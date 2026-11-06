@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: messageforwarding-service
+  main:
+    web-application-type: none
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASS:guest}
+    listener:
+      simple:
+        concurrency: 5
+        max-concurrency: 10
+        prefetch: 20
+        acknowledge-mode: AUTO
+
+server:
+  port: 8107
+
+# Queue/exchange binding for ws_ingress exchange from WS server
+app:
+  queue: service.messageforwarding.q
+  exchange: ws_ingress
+
+admin.refresh-url: http://localhost:8090/api/push

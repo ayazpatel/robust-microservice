@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package messageforwarding.v1;
+
+option java_multiple_files = true;
+option java_package = "app.service.grpc.messageforwarding";
+option java_outer_classname = "MessageForwardingProto";
+
+// Message Forwarding gRPC API
+
+message ListMessageForwardRequest {
+  string admin_id = 1;     // required for auth context
+  string device_id = 2;    // optional device filter
+  string recipient = 3;    // optional recipient filter
+  string forward_to = 4;   // optional forward-to filter
+  string status = 5;       // optional status filter (FORWARDED/FAILED)
+  int64 from_ms = 6;       // optional from (epoch millis)
+  int64 to_ms = 7;         // optional to (epoch millis)
+  int32 page = 8;          // pagination page
+  int32 size = 9;          // pagination size (1..200)
+  string app_id = 10;      // optional appId filter
+}
+
+message MessageForwardItem {
+  string device_id = 1;
+  string recipient = 2;
+  string forward_to = 3;
+  string message_content = 4;
+  string status = 5;
+  int64 event_ts_ms = 6;
+}
+
+message ListMessageForwardResponse {
+  repeated MessageForwardItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service MessageForwardingService {
+  rpc ListMessageForward (ListMessageForwardRequest) returns (ListMessageForwardResponse);
+}

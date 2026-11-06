@@ -1,0 +1,12 @@
+@base=http://localhost:8090
+
+### Push a refresh to admin 42
+POST {{base}}/api/push
+Content-Type: application/json
+
+{
+  "adminId": "42",
+  "type": "refresh.telemetry",
+  "payload": { "status": "new data" }
+}
+

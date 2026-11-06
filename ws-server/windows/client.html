@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ws-server HTML Client</title>
+  <style>
+    :root {
+      --bg: #070b10;
+      --panel: rgba(13, 18, 28, 0.92);
+      --panel-2: rgba(18, 26, 40, 0.96);
+      --text: #e8f2ff;
+      --muted: #8ea1b8;
+      --line: #23324a;
+      --accent: #00ffc8;
+      --accent-2: #52a8ff;
+      --danger: #ff6b7a;
+      --ok: #3ee38f;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(0, 255, 200, 0.12), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(82, 168, 255, 0.12), transparent 32%),
+        linear-gradient(180deg, #05070b 0%, #090d14 100%);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 18px 20px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+    }
+
+    .title {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+    }
+
+    .pill strong { color: var(--text); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .section {
+      padding: 18px 20px 20px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      color: #dce9f7;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(0, 255, 200, 0.55);
+      box-shadow: 0 0 0 3px rgba(0, 255, 200, 0.12);
+    }
+
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s, opacity 0.12s;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--accent), #00c6a1);
+      color: #04110d;
+      box-shadow: 0 10px 24px rgba(0, 255, 200, 0.18);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-danger {
+      background: rgba(255, 107, 122, 0.15);
+      color: #ffb7bf;
+      border-color: rgba(255, 107, 122, 0.25);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 14px;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #6d7787;
+      box-shadow: 0 0 0 4px rgba(109, 119, 135, 0.12);
+    }
+
+    .dot.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(62, 227, 143, 0.12);
+    }
+
+    .dot.bad {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(255, 107, 122, 0.12);
+    }
+
+    .log {
+      height: 520px;
+      overflow: auto;
+      padding: 16px;
+      background: rgba(4, 8, 12, 0.72);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: Consolas, ui-monospace, Menlo, Monaco, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .hero, .grid, .split, .row {
+        grid-template-columns: 1fr;
+      }
+      .log { height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="card">
+        <div class="card-head">
+          <h1 class="title">ws-server HTML Client</h1>
+          <p class="subtitle">Connect to the C++ websocket server, send test JSON, and watch responses live.</p>
+          <div class="pill-row">
+            <span class="pill"><strong>Default WS</strong> ws://localhost:8080</span>
+            <span class="pill"><strong>Auth</strong> token + deviceId query params</span>
+            <span class="pill"><strong>Endpoint</strong> /push/device supported on server</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section">
+          <h2>Connection Status</h2>
+          <div class="status">
+            <div class="status-line"><span id="dot" class="dot"></span><span id="statusText">Disconnected</span></div>
+            <span id="socketUrl" class="hint">ws://localhost:8080</span>
+          </div>
+          <div class="hint">If <code>AUTH_DEV_MODE=true</code> is enabled on the server, the token field can be left empty for local testing.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="section">
+          <h2>Connect</h2>
+          <div class="field">
+            <label for="baseUrl">Base WebSocket URL</label>
+            <input id="baseUrl" value="ws://localhost:8080" placeholder="ws://localhost:8080" />
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="deviceId">Device ID</label>
+              <input id="deviceId" value="demo-device-001" placeholder="demo-device-001" />
+            </div>
+            <div class="field">
+              <label for="token">JWT Token</label>
+              <input id="token" placeholder="paste JWT here" />
+            </div>
+          </div>
+          <div class="buttons">
+            <button class="btn-primary" id="connectBtn">Connect</button>
+            <button class="btn-secondary" id="disconnectBtn">Disconnect</button>
+            <button class="btn-secondary" id="clearBtn">Clear Log</button>
+          </div>
+          <div class="hint">The client opens <code>?token=...</code> and <code>&deviceId=...</code> on connect.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section">
+          <h2>Send Message</h2>
+          <div class="field">
+            <label for="topic">Topic</label>
+            <input id="topic" value="as_gateway.client.event" />
+          </div>
+          <div class="field">
+            <label for="payload">Payload JSON</label>
+            <textarea id="payload">{
+  "type": "ping",
+  "data": {
+    "message": "hello from html client"
+  }
+}</textarea>
+          </div>
+          <div class="buttons">
+            <button class="btn-primary" id="sendBtn">Send</button>
+            <button class="btn-secondary" id="sampleBtn">Load Sample</button>
+            <button class="btn-danger" id="pushBtn">POST /push/device</button>
+          </div>
+          <div class="hint">The websocket server accepts JSON and forwards it to RabbitMQ with the sender envelope. The push button works best when this page is served from the same host, not opened directly as a file.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <div class="section" style="padding-bottom: 0;">
+        <h2>Event Log</h2>
+      </div>
+      <div id="log" class="log"></div>
+    </div>
+  </div>
+
+  <script>
+    const baseUrlEl = document.getElementById('baseUrl');
+    const deviceIdEl = document.getElementById('deviceId');
+    const tokenEl = document.getElementById('token');
+    const topicEl = document.getElementById('topic');
+    const payloadEl = document.getElementById('payload');
+    const logEl = document.getElementById('log');
+    const statusTextEl = document.getElementById('statusText');
+    const dotEl = document.getElementById('dot');
+    const socketUrlEl = document.getElementById('socketUrl');
+    const connectBtn = document.getElementById('connectBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const pushBtn = document.getElementById('pushBtn');
+
+    let socket = null;
+
+    function now() {
+      return new Date().toLocaleTimeString();
+    }
+
+    function log(message, kind = 'info') {
+      const prefix = `[${now()}] ${kind.toUpperCase()}: `;
+      logEl.textContent += prefix + message + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(text, state) {
+      statusTextEl.textContent = text;
+      dotEl.classList.remove('ok', 'bad');
+      if (state) dotEl.classList.add(state);
+    }
+
+    function buildUrl() {
+      const base = baseUrlEl.value.trim().replace(/\/$/, '');
+      const params = new URLSearchParams();
+      const token = tokenEl.value.trim();
+      const deviceId = deviceIdEl.value.trim();
+      if (token) params.set('token', token);
+      if (deviceId) params.set('deviceId', deviceId);
+      const query = params.toString();
+      const full = query ? `${base}/?${query}`.replace('/?','?') : `${base}/`;
+      return full.replace(/\/$/, '').replace('/?', '?');
+    }
+
+    function buildHttpBase() {
+      const raw = baseUrlEl.value.trim().replace(/\/$/, '');
+      return raw
+        .replace(/^ws:\/\//i, 'http://')
+        .replace(/^wss:\/\//i, 'https://');
+    }
+
+    function openSocket() {
+      if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+        log('Socket already open or connecting', 'warn');
+        return;
+      }
+
+      const url = buildUrl();
+      socketUrlEl.textContent = url;
+      log(`Connecting to ${url}`);
+      setStatus('Connecting...', null);
+
+      socket = new WebSocket(url);
+
+      socket.onopen = () => {
+        setStatus('Connected', 'ok');
+        log('WebSocket connected', 'ok');
+      };
+
+      socket.onmessage = (event) => {
+        log(`<= ${event.data}`, 'recv');
+      };
+
+      socket.onerror = () => {
+        setStatus('Socket error', 'bad');
+        log('WebSocket error', 'error');
+      };
+
+      socket.onclose = (event) => {
+        setStatus(`Closed (${event.code})`, event.wasClean ? null : 'bad');
+        log(`WebSocket closed code=${event.code} reason=${event.reason || '(none)'}`, 'warn');
+      };
+    }
+
+    function closeSocket() {
+      if (!socket) {
+        log('No socket to close', 'warn');
+        return;
+      }
+      socket.close(1000, 'client close');
+      socket = null;
+    }
+
+    function parsePayload() {
+      const raw = payloadEl.value.trim();
+      if (!raw) {
+        return { type: 'ping', data: { message: 'empty payload' } };
+      }
+      return JSON.parse(raw);
+    }
+
+    function sendMessage() {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        log('Socket is not connected', 'warn');
+        return;
+      }
+
+      let body;
+      try {
+        body = parsePayload();
+      } catch (error) {
+        log(`Invalid JSON payload: ${error.message}`, 'error');
+        return;
+      }
+
+      if (topicEl.value.trim() && !body.topic) {
+        body.topic = topicEl.value.trim();
+      }
+
+      const message = JSON.stringify(body, null, 2);
+      socket.send(message);
+      log(`=> ${message}`, 'send');
+    }
+
+    async function pushDevice() {
+      const deviceId = deviceIdEl.value.trim();
+      if (!deviceId) {
+        log('deviceId is required for POST /push/device', 'warn');
+        return;
+      }
+
+      const payload = {
+        type: 'server_msg',
+        text: 'hello from HTML client'
+      };
+
+      try {
+        const response = await fetch(`${buildHttpBase()}/push/device`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ deviceId, payload })
+        });
+        const text = await response.text();
+        log(`POST /push/device => ${response.status} ${text}`, response.ok ? 'ok' : 'error');
+      } catch (error) {
+        log(`POST /push/device failed: ${error.message}`, 'error');
+      }
+    }
+
+    function loadSample() {
+      payloadEl.value = JSON.stringify({
+        topic: 'as_gateway.client.event',
+        data: {
+          type: 'ping',
+          message: 'hello from html client',
+          ts: Date.now()
+        }
+      }, null, 2);
+      log('Loaded sample payload', 'info');
+    }
+
+    connectBtn.addEventListener('click', openSocket);
+    disconnectBtn.addEventListener('click', closeSocket);
+    clearBtn.addEventListener('click', () => { logEl.textContent = ''; });
+    sendBtn.addEventListener('click', sendMessage);
+    sampleBtn.addEventListener('click', loadSample);
+    pushBtn.addEventListener('click', pushDevice);
+
+    baseUrlEl.addEventListener('change', () => { socketUrlEl.textContent = buildUrl(); });
+    deviceIdEl.addEventListener('change', () => { socketUrlEl.textContent = buildUrl(); });
+    tokenEl.addEventListener('change', () => { socketUrlEl.textContent = buildUrl(); });
+
+    socketUrlEl.textContent = buildUrl();
+    log('Ready. Open the server, then click Connect.');
+  </script>
+</body>
+</html>

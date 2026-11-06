@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package messages.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.messages";
+option java_outer_classname = "MessagesProto";
+
+message ListMessagesRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  string recipient = 3;
+  string status = 4;
+  string type = 5;
+  int64 from_ms = 6;
+  int64 to_ms = 7;
+  int32 page = 8;
+  int32 size = 9;
+  string app_id = 10;
+}
+
+message MessageItem {
+  string device_id = 1;
+  string recipient = 2;
+  string message_content = 3;
+  string message_status = 4;
+  string message_type = 5;
+  int64 event_ts_ms = 6;
+}
+
+message ListMessagesResponse {
+  repeated MessageItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service MessagesService {
+  rpc ListMessages (ListMessagesRequest) returns (ListMessagesResponse);
+}

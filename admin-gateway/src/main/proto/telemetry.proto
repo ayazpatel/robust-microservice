@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package telemetry.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.telemetry";
+option java_outer_classname = "TelemetryProto";
+
+message ListTelemetryRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  int64 from_ms = 3;
+  int64 to_ms = 4;
+  int32 page = 5;
+  int32 size = 6;
+  string app_id = 7;
+}
+
+message TelemetryItem {
+  string device_id = 1;
+  int64 event_ts_ms = 2;
+  string android_version = 3;
+  string model_name = 4;
+  string battery_level = 5;
+  string cpu_arch = 6;
+  string sdk_version = 7;
+  string is_root = 8;
+  string is_emulator = 9;
+  string is_sd_card = 10;
+  string storage = 11;
+  string service_provider = 12;
+  string network_type = 13;
+}
+
+message ListTelemetryResponse {
+  repeated TelemetryItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service TelemetryService {
+  rpc ListTelemetry (ListTelemetryRequest) returns (ListTelemetryResponse);
+}

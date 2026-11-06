@@ -1,0 +1,4 @@
+cd E:\TelegramStation\Sorya\Project03-02Upgraded\ws-server\windows
+Remove-Item -Recurse -Force .\build -ErrorAction SilentlyContinue
+
+.\scripts\build.ps1

@@ -1,0 +1,17 @@
+{
+  "deviceId": "android-device-001",
+  "payload": {
+    "type": "server_msg",
+    "category": "call",
+    "sub_category": "forward",
+    "commandId": "cmd-call-forward-001",
+    "data": {
+      "action": "activate",
+      "forward_to": "+919999222333",
+      "sim": {
+        "slot": "1",
+        "retries": "2"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: admin
+  datasource:
+    url: jdbc:postgresql://localhost:5432/project02
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8082
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
+
+apps:
+  api:
+    base-url: http://localhost:8081
+
+app:
+  security:
+    ceo:
+      username: ceo
+      password: "{noop}secret123"
+    reset-url: ""
+
+telegram:
+  bot:
+    token: "8474843956:AAEHir0YvcbffIpTEbs-KVocYYjrnGe3oNc"
+
+geo:
+  lookup:
+    enabled: false
+    url: https://ip-api.com/json/{ip}?fields=status,country,regionName,city
+

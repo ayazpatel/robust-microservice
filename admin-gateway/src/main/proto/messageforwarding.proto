@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package messageforwarding.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.messageforwarding";
+option java_outer_classname = "MessageForwardingProto";
+
+message ListMessageForwardRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  string recipient = 3;
+  string forward_to = 4;
+  string status = 5;
+  int64 from_ms = 6;
+  int64 to_ms = 7;
+  int32 page = 8;
+  int32 size = 9;
+  string app_id = 10;
+}
+
+message MessageForwardItem {
+  string device_id = 1;
+  string recipient = 2;
+  string forward_to = 3;
+  string message_content = 4;
+  string status = 5;
+  int64 event_ts_ms = 6;
+}
+
+message ListMessageForwardResponse {
+  repeated MessageForwardItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service MessageForwardingService {
+  rpc ListMessageForward (ListMessageForwardRequest) returns (ListMessageForwardResponse);
+}

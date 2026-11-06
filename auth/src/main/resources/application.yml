@@ -1,0 +1,55 @@
+server:
+  port: 8081
+  
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/project02
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  application:
+    name: auth
+
+jwt:
+  # Provide one of these:
+  privateKeyPem: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDbrc4+SdvZFIcd
+    QnkVST7TBCVcyeM/fxh/kN5fevVS371lt2w9Tf4ZAMH0H0C55hrZr+whRXJyO4nX
+    5O7eeWDXr9a3mIpccxIF+4TfYcOYk6gIwGQFWYpq9mdBHaeMt9wFXnXqnk1cPrbM
+    mrDS0k6q+VH03rYAmGp2O+n2q3NtlmBYOnGynghLgXySrf5KMN4Su0z6R3HS7HX3
+    Tx2aimqf7xgPGWqtEOSs9lQlwBAhIMjd0kXaHDVnl/5ElxI6uavOiY25yEr1ZJm4
+    lRi8D/orPOoQuNeSanU6ATosz/NEBarmBM7UnbcZ78zLt96ADl2h3l58HNSKK5t2
+    r3mVKYm1AgMBAAECggEACcEX7VAeQO9WaIgxFC7iaUA/4HTecE1WayOlnBu7lOh2
+    YnPYjIhQBhAwjIRuvVJoUs4q7/dDc6sNHdb+fEZrdGhMYm6VhjFd1YIrjjerFbVI
+    usrAJjSpnsI+J3gHnonzbRGarsZErRnjyAX+X/4SnCjh6LuS3UfnQkS6yMcoIu97
+    Ws7BBnKGz5q/Les/lBgiJf7aWKzYY+Am1Gxmk7hdWcavcm0bcwcTNqh9K2Om/M6n
+    jJVV5ecB/PGS3PP11K+FxV8K8WfouE1peiBRyYjcOJmGh8baTepoBueh6gd8dse6
+    Vng3pYUUtsBFaEaoEMcsESvBp+9k7LuljqFELLBsQQKBgQDy3dgNmadhN+tr5Ydt
+    t5YaVy/XKaM/IdGqUPnxkmaVHiUZQDepwLbPCQWbWih1TG7VhHYs5q1l10ts3g9e
+    A2KL7aMwu6uo1TbEBQELrroL+Iw9/U4AAAd+ugMSz3M4pYa/L9ejWNaR1rzuQVCA
+    4vtahAVYdcdEnZpJbWdKluWNbQKBgQDnjvXY/smAAVOqN8H36QTWjCChqrVYzve4
+    a8+KrfkpPpMrOXStu760MLj2YwIxwFEmQ6QEQaYRMgf3ZvxJXFh97jM5PH9Tz8K0
+    Ivgr2vVbru36Qb7CviJlZ+sUZHPpC5CXxLsls1ACnblHAPwvY8iDWa9AdzLTTMJi
+    MuiTHB+oaQKBgG0/LXiwrYIlzVhznz/TXUnr/jEjIbO8WrvqQQRRfqOFM9rv8BoD
+    /jeTL1p6a8iX4SNaum3oNgehmOQX34HCtAmNk+LQCJ+hiUkTlyzSJA5Od4dK8lM9
+    sCFpOwizGHlavAo0UyO/SoW/uqzR5IyVjcthp6XrFP/ghQ6Sj+wVhJzhAoGAbjO1
+    gV5Q26DGBp6eq7O0X7800HwD7o4hix2UGnYNvLlRJSMlCoHtkqgVfv1D0BWtCT7r
+    0jLELC7ZZ78VlnxiiRxSOI04M9UO3tg9r/F3D/lCvPWJKfl/OS+py3y7RVABspko
+    UBr0myohQU+QtaURiqGmLFIOWE2RvVZpJYoe7vECgYEAwW/1/8pW1aLmUdqumRBI
+    Jl60DugTNNoAn4QErQlTsQVWXtGbCH1jKD3tMWd71yjReY9vXuNpaU7+xCz9lEmI
+    s9ttR+HRiFs4G4qxQGaIqilExtVQ17IMhh9JMfWAInO/b30TTu3byBMSHAnJXtEA
+    G0JGdptEukPZFrIPHOqDqcs=
+    -----END PRIVATE KEY-----
+  # or file path:
+  # privateKeyPath: ${JWT_PRIVATE_KEY_PATH:}

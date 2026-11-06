@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package calllogs.v1;
+
+option java_multiple_files = true;
+option java_package = "com.admingateway.grpc.calllogs";
+option java_outer_classname = "CallLogsProto";
+
+message ListCallLogsRequest {
+  string admin_id = 1;
+  string device_id = 2;
+  string number = 3;
+  string type = 4;
+  int64 from_ms = 5;
+  int64 to_ms = 6;
+  int32 page = 7;
+  int32 size = 8;
+  string app_id = 9;
+}
+
+message CallLogItem {
+  uint64 id = 1;
+  string admin_id = 2;
+  string device_id = 3;
+  string number = 4;
+  string type = 5;
+  int32 duration_sec = 6;
+  int64 event_ts_ms = 7;
+}
+
+message ListCallLogsResponse {
+  repeated CallLogItem items = 1;
+  int32 page = 2;
+  int32 size = 3;
+  int32 count = 4;
+}
+
+service CallLogsService {
+  rpc ListCallLogs (ListCallLogsRequest) returns (ListCallLogsResponse);
+}

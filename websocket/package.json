@@ -1,0 +1,25 @@
+{
+  "name": "realtime-ws",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start:single": "bun src/server.js",
+    "start:node": "node src/server.js",
+    "start:pm2:local": "pm2 start config/ecosystem.local.config.js && pm2 logs",
+    "start:pm2:bare": "pm2 start config/ecosystem.baremetal.config.js && pm2 logs",
+    "test:local": "bun tests/local-ws-burst.js",
+    "test:bare": "bun tests/baremetal-ws-soak.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "dotenv": "^17.2.3",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v20.52.0"
+  },
+  "devDependencies": {
+    "pm2": "^5.3.0",
+    "ws": "^8.18.0"
+  }
+}

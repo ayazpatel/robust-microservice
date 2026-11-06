@@ -1,0 +1,11 @@
+cmake --preset ninja-vcpkg-debug --fresh
+
+
+cmake --build --preset ninja-vcpkg-debug
+
+
+cd 'E:\TelegramStation\Sorya\Project03-02Upgraded\ws-server\windows\out\build\ninja-vcpkg-debug'; 
+$env:AUTH_PUBLIC_PEM_FILE=(Resolve-Path 'keys\jwt.pub').Path; 
+$env:RABBIT_URL='amqp://guest:guest@localhost:5672/'; 
+$env:REDIS_URL='tcp://127.0.0.1:6379'; 
+.\ws_server.exe;

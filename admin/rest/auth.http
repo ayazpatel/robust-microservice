@@ -1,0 +1,79 @@
+# REST Client collection for Auth API
+# Requires VS Code REST Client extension (humao.rest-client)
+# Select environment variables below or override per request.
+
+@base = http://localhost:8082
+@username = alice
+@password = admin123
+@ua = AdminPanel/1.0 (+https://example.com)
+@otpCode = 687974
+@newPassword = alice123
+@otpTxnId = e472d348-23c1-40e7-b331-757814b4570e
+@resetTxnId = 518cf652-2b76-4bb0-a9d8-84159a4f89e2
+
+### Login (start 2FA)
+POST {{base}}/auth/login
+Content-Type: application/json
+User-Agent: {{ua}}
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+> {% 
+  client.test("200 OK", function() { client.assert(response.status === 200); });
+  try {
+    const body = JSON.parse(response.body);
+    if (body.status === 'OTP_REQUIRED') {
+      client.global.set('otpTxnId', body.otpTxnId || '');
+      client.global.set('adminId', body.adminId || '');
+    }
+  } catch (_) {}
+%}
+
+### Verify OTP (complete login)
+POST {{base}}/auth/verify-otp
+Content-Type: application/json
+User-Agent: {{ua}}
+
+{
+  "username": "{{username}}",
+  "code": "{{otpCode}}",
+  "otpTxnId": "{{otpTxnId}}"
+}
+
+> {% 
+  client.test("200 OK", function() { client.assert(response.status === 200); });
+%}
+
+### Start password reset
+POST {{base}}/auth/reset/start
+Content-Type: application/json
+
+{
+  "username": "{{username}}"
+}
+
+> {% 
+  client.test("200 OK", function() { client.assert(response.status === 200); });
+  try {
+    const body = JSON.parse(response.body);
+    if (body.otpTxnId) client.global.set('resetTxnId', body.otpTxnId);
+  } catch (_) {}
+%}
+
+### Confirm password reset
+POST {{base}}/auth/reset/confirm
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "otpTxnId": "{{resetTxnId}}",
+  "code": "{{otpCode}}",
+  "newPassword": "{{newPassword}}"
+}
+
+> {% 
+  client.test("200 OK", function() { client.assert(response.status === 200); });
+%}

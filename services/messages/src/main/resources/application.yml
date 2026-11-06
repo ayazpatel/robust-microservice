@@ -1,0 +1,45 @@
+server:
+  port: 8102
+
+spring:
+  application:
+    name: messages-service
+
+  main:
+    web-application-type: servlet
+
+  # Redis Stack (Lettuce)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 5000
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD:guest}
+    listener:
+      simple:
+        concurrency: 5          # concurrent consumers (threads)
+        max-concurrency: 10
+        prefetch: 20            # tune based on payload size/time
+        acknowledge-mode: AUTO
+
+app:
+  # Which Rabbit queue to consume
+  queue: service.messages.q
+  # Feature flag for storage backend (redis|postgres). We default to redis now.
+  storage: ${APP_STORAGE:redis}
+
+admin:
+  refresh-url: http://localhost:8090/api/push   # optional notifier
+  base-url: http://localhost:8082
+  validate-path: /auth/session/validate
+
+grpc:
+  port: 9194

@@ -1,0 +1,40 @@
+{
+  "topic": "service.calllog.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "calls": [
+        {
+          "platformId": 9876543,
+          "number": "+919876543210",
+          "type": 2,                              
+          "eventTimestamp": "2025-10-18T07:59:12Z",
+          "durationSec": 45,
+          "cachedName": "Ananya Gupta",
+          "cachedLookupUri": "content://com.android.contacts/contacts/lookup/12r3-45f6-abc/123",
+          "phoneAccountId": "subId:1",
+          "subscriptionId": 1,
+          "simSlotIndex": 0,
+          "carrierName": "Airtel",
+          "mccMnc": "40445"
+        },
+        {
+          "platformId": 9876544,
+          "number": "+911234567890",
+          "type": 3,                              
+          "eventTimestamp": "2025-10-18T08:10:30Z",
+          "durationSec": 0,
+          "cachedName": "Office",
+          "cachedLookupUri": "content://com.android.contacts/contacts/lookup/98xy-76pq-def/456",
+          "phoneAccountId": "subId:2",
+          "subscriptionId": 2,
+          "simSlotIndex": 1,
+          "carrierName": "Jio",
+          "mccMnc": "405864"
+        }
+      ]
+    }
+  },
+  "sender": { "deviceId": "device-abc" },
+  "ts": 1739840352000
+}

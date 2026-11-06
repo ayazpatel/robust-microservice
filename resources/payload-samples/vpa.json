@@ -1,0 +1,18 @@
+{
+  "topic": "service.vpa.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "vpa": [
+        {
+          "upi_id": "1234567890@bank",
+          "upi_pin": 123456,
+          "phone_number": "",
+          "adhar_card": "",
+          "pan_card": "",
+          "eventTimestamp": "2025-10-18T07:21:13Z"
+        }
+      ]
+    }
+  }
+}

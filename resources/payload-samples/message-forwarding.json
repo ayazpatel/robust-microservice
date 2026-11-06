@@ -1,0 +1,17 @@
+{
+  "topic": "service.messageforwarding.batch",
+  "data": {
+    "adminId": "59a8b07919e5fbe3",
+    "payload": {
+      "forwards": [
+        {
+          "recipient": "+911234567890",
+          "forwardTo": "+919876543210",
+          "messageContent": "OTP is 123456",
+          "status": "FORWARDED",
+          "eventTimestamp": "2025-10-25T12:34:56Z"
+        }
+      ]
+    }
+  }
+}

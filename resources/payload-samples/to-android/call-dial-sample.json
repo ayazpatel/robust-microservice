@@ -1,0 +1,15 @@
+{
+  "deviceId": "android-device-001",
+  "payload": {
+    "type": "server_msg",
+    "category": "call",
+    "sub_category": "dial",
+    "commandId": "cmd-call-dial-001",
+    "data": {
+      "number": "+918888000111",
+      "sim": {
+        "slot": "0"
+      }
+    }
+  }
+}

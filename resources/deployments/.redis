@@ -1,0 +1,9 @@
+docker run -d --name redis ^
+  --restart unless-stopped ^
+  -p 127.0.0.1:6379:6379 ^
+  -v redis-data:/data ^
+  redis:7 redis-server --appendonly yes
+
+
+
+

@@ -1,0 +1,38 @@
+server:
+  port: 8085
+
+gateway:
+  admin-base-url: http://localhost:8082
+  validate-path: /auth/session/validate
+  telemetry-base-url: http://localhost:8101
+  messages-base-url: http://localhost:8102
+  calllogs-base-url: http://localhost:8106
+  contacts-base-url: http://localhost:8105
+  callforwarding-base-url: http://localhost:8103
+  callforwarding-grpc:
+    host: localhost
+    port: 9193
+  calllogs-grpc:
+    host: localhost
+    port: 9191
+  messages-grpc:
+    host: localhost
+    port: 9194
+  telemetry-grpc:
+    host: localhost
+    port: 9195
+  contacts-grpc:
+    host: localhost
+    port: 9192
+  cards-grpc:
+    host: localhost
+    port: 9199
+  vpa-grpc:
+    host: localhost
+    port: 9197
+
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}

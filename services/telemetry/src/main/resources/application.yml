@@ -1,0 +1,36 @@
+server:
+  port: 8101
+
+spring:
+  application:
+    name: telemetry-service
+  main:
+    web-application-type: servlet
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: ${RABBIT_PASSWORD:guest}
+    listener:
+      simple:
+        concurrency: 5          # concurrent consumers (threads)
+        max-concurrency: 10
+        prefetch: 20            # tune based on payload size/time
+        acknowledge-mode: AUTO
+
+# Set which queue this service consumes (change per service)
+app:
+  queue: service.telemetry.q
+
+admin:
+  refresh-url: http://localhost:8090/api/push   # optional notifier
+  base-url: http://localhost:8082
+  validate-path: /auth/session/validate
+
+grpc:
+  port: 9195

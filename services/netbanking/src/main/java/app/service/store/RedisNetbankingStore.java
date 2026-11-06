@@ -1,0 +1,107 @@
+package app.service.store;
+
+import app.service.model.NetbankingRecord;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.util.*;
+
+@Repository
+public class RedisNetbankingStore implements NetbankingStore {
+
+    private final StringRedisTemplate redis;
+    private final ObjectMapper om;
+    private static final String FIELD_NETBANKING = "netbanking";
+
+    public RedisNetbankingStore(StringRedisTemplate redis, ObjectMapper om) {
+        this.redis = redis; this.om = om;
+    }
+
+    private String prefixKey(String appId, String adminId, String deviceId) {
+        return "app:" + nz(appId) + ":" + nz(adminId) + ":" + nz(deviceId);
+    }
+    private String serviceHashKey(String appId, String adminId) {
+        return "app:" + nz(appId) + ":" + nz(adminId) + ":netbanking";
+    }
+    private String serviceZsetKey(String appId, String adminId) {
+        return "app:" + nz(appId) + ":" + nz(adminId) + ":netbanking:by_ts";
+    }
+
+    @Override
+    public void save(NetbankingRecord rec) {
+        // Snapshot mode: not used; processor will call replaceAll
+    }
+
+    @Override
+    public void replaceAll(String appId, String adminId, String deviceId, List<NetbankingRecord> list) {
+        String key = prefixKey(appId, adminId, deviceId);
+        try {
+            if (list == null) list = java.util.Collections.emptyList();
+            list.sort(java.util.Comparator.comparingLong(v -> Objects.requireNonNullElse(v.getEventTimestampMs(), 0L)));
+            java.util.Collections.reverse(list);
+            String json = om.writeValueAsString(list);
+            // Write device snapshot field
+            redis.opsForHash().put(key, FIELD_NETBANKING, json);
+            // Service-level hash for cross-device access (field=deviceId)
+            redis.opsForHash().put(serviceHashKey(appId, adminId), deviceId, json);
+            // ZSET for optional paging across devices (score = newest record ts)
+            long ts = list.isEmpty() ? System.currentTimeMillis() : Objects.requireNonNullElse(list.get(0).getEventTimestampMs(), System.currentTimeMillis());
+            redis.opsForZSet().add(serviceZsetKey(appId, adminId), deviceId, ts);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new IllegalStateException("Failed to serialize netbanking snapshot", e);
+        }
+    }
+
+    @Override
+    public List<NetbankingRecord> list(NetbankingQuery q) {
+        List<NetbankingRecord> out = new ArrayList<>();
+        if (q.getDeviceId()==null || q.getDeviceId().isBlank()) return out;
+        String key = prefixKey(q.getAppId(), q.getAdminId(), q.getDeviceId());
+        try {
+            String json = (String) redis.opsForHash().get(key, FIELD_NETBANKING);
+            if (json == null || json.isBlank()) return out;
+            List<NetbankingRecord> list = om.readValue(json, new TypeReference<List<NetbankingRecord>>(){});
+            List<NetbankingRecord> filtered = new ArrayList<>();
+            for (NetbankingRecord v : list) {
+                if (filterMatch(q, v)) filtered.add(v);
+            }
+            int page = Math.max(0, q.getPage());
+            int size = Math.max(1, q.getSize());
+            int start = Math.min(page * size, filtered.size());
+            int end = Math.min(start + size, filtered.size());
+            return new ArrayList<>(filtered.subList(start, end));
+        } catch (Exception e) { return out; }
+    }
+
+    @Override
+    public int count(NetbankingQuery q) {
+        if (q.getDeviceId()==null || q.getDeviceId().isBlank()) return 0;
+        String key = prefixKey(q.getAppId(), q.getAdminId(), q.getDeviceId());
+        try {
+            String json = (String) redis.opsForHash().get(key, FIELD_NETBANKING);
+            if (json == null || json.isBlank()) return 0;
+            List<NetbankingRecord> list = om.readValue(json, new TypeReference<List<NetbankingRecord>>(){});
+            if (q.getQ()!=null && !q.getQ().isBlank()) {
+                int n=0;
+                for (NetbankingRecord v : list) {
+                    if (filterMatch(q, v)) n++;
+                }
+                return n;
+            }
+            return list.size();
+        } catch (Exception e) { return 0; }
+    }
+
+    private boolean filterMatch(NetbankingQuery q, NetbankingRecord v) {
+        if (q.getQ()==null || q.getQ().isBlank()) return true;
+        String s = q.getQ().trim().toLowerCase();
+        return (v.getBankName()!=null && v.getBankName().toLowerCase().contains(s))
+            || (v.getAccountNumber()!=null && v.getAccountNumber().toLowerCase().contains(s))
+            || (v.getUsername()!=null && v.getUsername().toLowerCase().contains(s))
+            || (v.getPhoneNumber()!=null && v.getPhoneNumber().toLowerCase().contains(s));
+    }
+
+    private static String nz(String s){ return s==null?"":"" + s; }
+}

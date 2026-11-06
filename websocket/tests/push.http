@@ -1,0 +1,24 @@
+@base=http://localhost:8080
+@connId=
+
+### Health
+GET {{base}}/health
+
+### List connections (sample only)
+GET {{base}}/connections
+
+# Note: When Redis is enabled (REDIS_URL set), count is global across workers.
+# Response shape: { "count": <number>, "sample": [ { deviceId, appId, connId } ] }
+
+### Push to a specific device (set deviceId)
+POST {{base}}/push/device
+Content-Type: application/json
+
+{
+  "deviceId": "device-001",
+  "payload": { "type": "server_msg", "text": "hello device" }
+}
+
+# Response:
+# - With Redis enabled: { "accepted": true, "online": true|false }
+# - Without Redis:     { "delivered": true }
